@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.10)
-project(libMesh)
+cmake_minimum_required(VERSION 3.14)
+project(Mesh)
 
-add_library(libMesh mesh.cpp vector.cpp point.cpp)
+add_library(Mesh mesh.cpp vector.cpp point.cpp transformation.cpp)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+add_subdirectory(test)
