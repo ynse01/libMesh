@@ -1,5 +1,7 @@
 #pragma once
 
+#include "transformation.h"
+
 namespace libMesh {
     struct Vector {
         public:
@@ -11,5 +13,7 @@ namespace libMesh {
 
             float dot(Vector& other);
             Vector cross(Vector& other);
+
+            void transform(Transformation t);
     };
 }

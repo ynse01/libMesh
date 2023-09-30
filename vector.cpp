@@ -1,6 +1,6 @@
 #include "vector.h"
 
-libMesh::Vector::Vector() : x(0.0f), y(0.0f), z(0.0f)
+libMesh::Vector::Vector() : Vector(0.0f, 0.0f, 0.0f)
 {
 }
 
@@ -20,4 +20,14 @@ libMesh::Vector libMesh::Vector::cross(Vector &other)
     result.y = (z * other.x) - (x * other.z);
     result.z = (x * other.y) - (y * other.x);
     return result;
+}
+
+void libMesh::Vector::transform(Transformation t)
+{
+    float newX = (x * t.m00 + y * t.m10 + z * t.m20) / t.m33;
+    float newY = (x * t.m01 + y * t.m11 + z * t.m21) / t.m33;
+    float newZ = (x * t.m02 + y * t.m12 + z * t.m22) / t.m33;
+    x = newX;
+    y = newY;
+    z = newZ;
 }

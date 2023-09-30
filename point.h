@@ -7,7 +7,7 @@ namespace libMesh {
         public:
             Point();
             Point(float x, float y, float z);
-            Point(Point& other);
+            Point(const Point& other);
             float x;
             float y;
             float z;
@@ -17,5 +17,7 @@ namespace libMesh {
 
             float distanceTo(Point& other);
             float squaredDistanceTo(Point& other);
+
+            void transform(Transformation t);
     };
 }
