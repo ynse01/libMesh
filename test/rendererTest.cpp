@@ -9,7 +9,7 @@ TEST(Renderer, Render) {
   auto renderer = Renderer();
   // Act
   bool actual = renderer.start();
-  renderer.render();
+  renderer.run();
   // Assert
   EXPECT_EQ(actual, true);
 }
