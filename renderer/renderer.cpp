@@ -34,7 +34,12 @@ bool libRenderer::Renderer::start()
     return true;
 }
 
-void libRenderer::Renderer::render()
+void libRenderer::Renderer::close()
+{
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+void libRenderer::Renderer::run()
 {
     do{
 		// Clear the screen.

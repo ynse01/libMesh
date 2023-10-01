@@ -6,7 +6,8 @@ namespace libRenderer {
     class Renderer {
         public:
             bool start();
-            void render();
+            void close();
+            void run();
         private:
             GLFWwindow *window;
     };
