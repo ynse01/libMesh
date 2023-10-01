@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(MeshTest)
 
-add_executable(MeshTest pointTest.cpp)
+add_executable(MeshTest pointTest.cpp rendererTest.cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-target_link_libraries(MeshTest Mesh GTest::gtest_main)
+target_link_libraries(MeshTest Mesh Renderer GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(MeshTest)
