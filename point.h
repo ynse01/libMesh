@@ -12,12 +12,12 @@ namespace libMesh {
             float y;
             float z;
 
-            void add(Vector& vector);
-            void subtract(Vector& vector);
+            Point add(Vector& vector);
+            Point subtract(Vector& vector);
 
             float distanceTo(Point& other);
             float squaredDistanceTo(Point& other);
 
-            void transform(Transformation t);
+            Point transform(Transformation t);
     };
 }

@@ -8,7 +8,8 @@
 namespace libMesh {
     class Mesh {
         public:
-            Mesh(std::vector<Point> vertices, std::vector<unsigned int> indices, std::vector<Vector> normals = std::vector<Vector>());
+            Mesh(std::vector<Point> vertices, std::vector<unsigned int> indices);
+            Mesh(std::vector<Point> vertices, std::vector<unsigned int> indices, std::vector<Vector> normals);
         
             void transform(Transformation t);
         private:

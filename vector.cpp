@@ -22,12 +22,15 @@ libMesh::Vector libMesh::Vector::cross(Vector &other)
     return result;
 }
 
-void libMesh::Vector::transform(Transformation t)
+libMesh::Vector libMesh::Vector::transform(Transformation t)
 {
     float newX = (x * t.m00 + y * t.m10 + z * t.m20) / t.m33;
     float newY = (x * t.m01 + y * t.m11 + z * t.m21) / t.m33;
     float newZ = (x * t.m02 + y * t.m12 + z * t.m22) / t.m33;
-    x = newX;
-    y = newY;
-    z = newZ;
+    return Vector(newX, newY, newZ);
+}
+
+libMesh::Vector libMesh::Vector::scale(float value)
+{
+    return Vector(x * value, y * value, z * value);
 }

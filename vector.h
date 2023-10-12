@@ -14,6 +14,7 @@ namespace libMesh {
             float dot(Vector& other);
             Vector cross(Vector& other);
 
-            void transform(Transformation t);
+            Vector transform(Transformation t);
+            Vector scale(float value);
     };
 }
