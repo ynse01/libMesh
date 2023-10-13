@@ -13,5 +13,6 @@ namespace libMesh {
             Vector3 yAxis;
 
             Point3 get(Size2 index);
+            Vector3 getNormal();
     };
 }

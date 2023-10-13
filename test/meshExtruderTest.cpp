@@ -13,9 +13,10 @@ TEST(MeshExtruder, BoxNormalsShouldPointOutwards) {
   // Assert
   for (int i = 0; i < box->trianglesCount(); i++)
   {
-    auto p0 = box->getVertex(box->getIndex(3 * i));
-    auto p1 = box->getVertex(box->getIndex(3 * i + 2));
-    auto p2 = box->getVertex(box->getIndex(3 * i + 1));
+    auto index = box->getTriangle(i);
+    auto p0 = box->getVertex(index.a).position;
+    auto p1 = box->getVertex(index.b).position;
+    auto p2 = box->getVertex(index.c).position;
     auto toCenter = Point3::betweenPoints(center, p0);
     auto normal = Point3::betweenPoints(p0, p1).cross(Point3::betweenPoints(p0, p2));
     float dotProduct = normal.dot(toCenter);
@@ -31,9 +32,10 @@ TEST(MeshExtruder, CylinderNormalsShouldPointOutwards) {
   // Assert
   for (int i = 0; i < box->trianglesCount(); i++)
   {
-    auto p0 = box->getVertex(box->getIndex(3 * i));
-    auto p1 = box->getVertex(box->getIndex(3 * i + 2));
-    auto p2 = box->getVertex(box->getIndex(3 * i + 1));
+    auto index = box->getTriangle(i);
+    auto p0 = box->getVertex(index.a).position;
+    auto p1 = box->getVertex(index.b).position;
+    auto p2 = box->getVertex(index.c).position;
     auto toCenter = Point3::betweenPoints(center, p0);
     auto normal = Point3::betweenPoints(p0, p1).cross(Point3::betweenPoints(p0, p2));
     float dotProduct = normal.dot(toCenter);

@@ -11,7 +11,7 @@ using namespace libRenderer;
 TEST(Renderer, Render) {
   // Arrange
   auto renderer = Renderer();
-  auto box = libMesh::MeshExtruder::box(libMesh::Point3(), libMesh::Size2(0.5f, 0.5f), libMesh::Vector3::XAxis(), libMesh::Vector3::YAxis(), 0.8f);
+  auto box = libMesh::MeshExtruder::box(libMesh::Point3(), libMesh::Size2(0.6f, 0.5f), libMesh::Vector3::XAxis(), libMesh::Vector3::YAxis(), 0.1f);
   // Act
   bool actual = renderer.start();
   renderer.addMesh(box);

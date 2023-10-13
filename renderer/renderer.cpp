@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include "renderer.h"
-#include "vertex.h"
+#include "../vertex.h"
 
 #include <stdio.h>
 
@@ -91,15 +91,15 @@ void libRenderer::Renderer::addMesh(libMesh::Mesh *mesh)
 
 	glBindVertexArray(vertexArrayObject);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, mesh->verticesCount() * sizeof(Vertex), mesh->getVertexPtr(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mesh->verticesCount() * sizeof(libMesh::Vertex), mesh->getVertexPtr(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObject);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->trianglesCount() * 3 * sizeof(unsigned int), mesh->getIndexPtr(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(libMesh::Vertex), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(libMesh::Vertex), (void*)offsetof(libMesh::Vertex, normal));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(libMesh::Vertex), (void*)offsetof(libMesh::Vertex, texCoord));
 
 	// Reset state machine
 	glBindVertexArray(0);

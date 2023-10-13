@@ -12,3 +12,8 @@ libMesh::Point3 libMesh::Plane::get(Size2 index)
             .add(xAxis.scale(index.width))
             .add(yAxis.scale(index.height));
 }
+
+libMesh::Vector3 libMesh::Plane::getNormal()
+{
+    return xAxis.cross(yAxis);
+}
