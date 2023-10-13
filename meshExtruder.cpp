@@ -65,7 +65,7 @@ libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point center, float diameter, Vec
     {
         auto currentPoint = plane.get(Size2(sin(angle * i) * radius, cos(angle * i) * radius));
         vertices.push_back(currentPoint);
-        indices.push_back(0);indices.push_back(i);indices.push_back(i + 1);
+        indices.push_back(0);indices.push_back(i + 1);indices.push_back(i);
     }
     // Back face
     auto zAxis = xAxis.cross(yAxis).scale(length);
