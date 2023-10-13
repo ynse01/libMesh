@@ -12,11 +12,13 @@ namespace libMesh {
             float y;
             float z;
 
-            Point add(Vector& vector);
-            Point subtract(Vector& vector);
+            static Vector betweenPoints(Point p0, Point p1);
 
-            float distanceTo(Point& other);
-            float squaredDistanceTo(Point& other);
+            Point add(Vector vector);
+            Point subtract(Vector vector);
+
+            float distanceTo(Point other);
+            float squaredDistanceTo(Point other);
 
             Point transform(Transformation t);
     };

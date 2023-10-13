@@ -1,4 +1,5 @@
 #include "vector.h"
+#include "point.h"
 
 libMesh::Vector::Vector() : Vector(0.0f, 0.0f, 0.0f)
 {
@@ -8,12 +9,12 @@ libMesh::Vector::Vector(float x, float y, float z) : x(x), y(y), z(z)
 {
 }
 
-float libMesh::Vector::dot(Vector &other)
+float libMesh::Vector::dot(Vector other)
 {
     return x * other.x + y * other.y + z * other.z;
 }
 
-libMesh::Vector libMesh::Vector::cross(Vector &other)
+libMesh::Vector libMesh::Vector::cross(Vector other)
 {
     auto result = Vector();
     result.x = (y * other.z) - (z * other.y);

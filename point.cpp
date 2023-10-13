@@ -18,22 +18,27 @@ libMesh::Point::Point(const Point &other)
     z = other.z;
 }
 
-libMesh::Point libMesh::Point::add(Vector &vector)
+libMesh::Vector libMesh::Point::betweenPoints(Point p0, Point p1)
+{
+    return Vector(p1.x - p0.x, p1.y - p0.y, p1.z - p0.z);
+}
+
+libMesh::Point libMesh::Point::add(Vector vector)
 {
     return Point(x + vector.x, y + vector.y, z + vector.z);
 }
 
-libMesh::Point libMesh::Point::subtract(Vector &vector)
+libMesh::Point libMesh::Point::subtract(Vector vector)
 {
     return Point(x - vector.x, y - vector.y, z - vector.z);
 }
 
-float libMesh::Point::distanceTo(Point &other)
+float libMesh::Point::distanceTo(Point other)
 {
     return std::sqrt(squaredDistanceTo(other));
 }
 
-float libMesh::Point::squaredDistanceTo(Point &other)
+float libMesh::Point::squaredDistanceTo(Point other)
 {
     Vector diff = Vector(other.y - x, other.y - y, other.z - z);
     return diff.dot(diff);

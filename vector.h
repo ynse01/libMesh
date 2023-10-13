@@ -11,8 +11,12 @@ namespace libMesh {
             float y;
             float z;
 
-            float dot(Vector& other);
-            Vector cross(Vector& other);
+            static Vector XAxis() { return Vector(1.0f, 0.0f, 0.0f); }
+            static Vector YAxis() { return Vector(0.0f, 1.0f, 0.0f); }
+            static Vector ZAxis() { return Vector(0.0f, 0.0f, 1.0f); }
+
+            float dot(Vector other);
+            Vector cross(Vector other);
 
             Vector transform(Transformation t);
             Vector scale(float value);

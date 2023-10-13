@@ -30,20 +30,20 @@ libMesh::Mesh *libMesh::MeshExtruder::box(Point center, Size2 size, Vector xAxis
     //  ||  6 ||//
     //  2 === 1
     // Indices of front face
-    indices.push_back(0);indices.push_back(1);indices.push_back(2);
-    indices.push_back(0);indices.push_back(2);indices.push_back(3);
+    indices.push_back(0);indices.push_back(2);indices.push_back(1);
+    indices.push_back(0);indices.push_back(3);indices.push_back(2);
     // Indices of top face
-    indices.push_back(3);indices.push_back(7);indices.push_back(0);
-    indices.push_back(4);indices.push_back(0);indices.push_back(7);
+    indices.push_back(3);indices.push_back(0);indices.push_back(7);
+    indices.push_back(4);indices.push_back(7);indices.push_back(0);
     // Indices of left face
     indices.push_back(2);indices.push_back(3);indices.push_back(6);
-    indices.push_back(3);indices.push_back(6);indices.push_back(7);
+    indices.push_back(3);indices.push_back(7);indices.push_back(6);
     // Indices of bottom face
     indices.push_back(1);indices.push_back(2);indices.push_back(6);
     indices.push_back(1);indices.push_back(6);indices.push_back(5);
     // Indices of right face
-    indices.push_back(0);indices.push_back(4);indices.push_back(5);
-    indices.push_back(0);indices.push_back(5);indices.push_back(1);
+    indices.push_back(0);indices.push_back(5);indices.push_back(4);
+    indices.push_back(0);indices.push_back(1);indices.push_back(5);
     // Indices of back face
     indices.push_back(4);indices.push_back(5);indices.push_back(6);
     indices.push_back(4);indices.push_back(6);indices.push_back(7);

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(MeshTest)
 
-add_executable(MeshTest pointTest.cpp rendererTest.cpp)
+add_executable(MeshTest pointTest.cpp rendererTest.cpp meshExtruderTest.cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
