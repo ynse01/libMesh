@@ -4,9 +4,9 @@
 #include "meshExtruder.h"
 #include "plane.h"
 
-libMesh::Mesh *libMesh::MeshExtruder::box(Point center, Size2 size, Vector xAxis, Vector yAxis, float length)
+libMesh::Mesh *libMesh::MeshExtruder::box(Point3 center, Size2 size, Vector3 xAxis, Vector3 yAxis, float length)
 {
-    std::vector<Point> vertices;
+    std::vector<Point3> vertices;
     std::vector<unsigned int> indices;
     auto plane = Plane(center, xAxis, yAxis);
     auto halfSize = size.scale(0.5f);
@@ -50,18 +50,18 @@ libMesh::Mesh *libMesh::MeshExtruder::box(Point center, Size2 size, Vector xAxis
     return new Mesh(vertices, indices);
 }
 
-libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point center, float diameter, Vector xAxis, Vector yAxis, float length)
+libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point3 center, float diameter, Vector3 xAxis, Vector3 yAxis, float length, int numFaces)
 {
-    std::vector<Point> vertices;
+    std::vector<Point3> vertices;
     std::vector<unsigned int> indices;
     auto plane = Plane(center, xAxis, yAxis);
     auto radius = diameter / 2;
-    auto angle = M_PI / 20;
+    auto angle = M_PI / (numFaces * 2);
     // Front face
     auto previousPoint = plane.get(Size2(0, radius));
     vertices.push_back(plane.origin);
     vertices.push_back(previousPoint);
-    for (int i = 1; i < 40; i++)
+    for (int i = 1; i < numFaces; i++)
     {
         auto currentPoint = plane.get(Size2(sin(angle * i) * radius, cos(angle * i) * radius));
         vertices.push_back(currentPoint);
@@ -74,17 +74,17 @@ libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point center, float diameter, Vec
     previousPoint = backPlane.get(Size2(0, radius)).add(zAxis);
     vertices.push_back(backPlane.origin);
     vertices.push_back(previousPoint);
-    for (int i = 1; i < 40; i++)
+    for (int i = 1; i < numFaces; i++)
     {
         auto currentPoint = backPlane.get(Size2(sin(angle * i) * radius, cos(angle * i) * radius));
         vertices.push_back(currentPoint);
-        indices.push_back(41);indices.push_back(i + 41);indices.push_back(i + 42);
+        indices.push_back(numFaces + 1);indices.push_back(i + numFaces + 1);indices.push_back(i + numFaces + 2);
     }
     // Side curved face
-    for (int i = 1; i < 40; i++)
+    for (int i = 1; i < numFaces; i++)
     {
-        indices.push_back(i);indices.push_back(i + 1);indices.push_back(i + 41);
-        indices.push_back(i + 1);indices.push_back(i + 42);indices.push_back(i + 41);
+        indices.push_back(i);indices.push_back(i + 1);indices.push_back(i + numFaces + 1);
+        indices.push_back(i + 1);indices.push_back(i + numFaces + 2);indices.push_back(i + numFaces + 1);
     }
     return new Mesh(vertices, indices);
 }
