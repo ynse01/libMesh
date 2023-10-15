@@ -1,4 +1,6 @@
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "renderer.h"
 #include "../vertex.h"
 
@@ -31,7 +33,7 @@ bool libRenderer::Renderer::start()
 		glfwTerminate();
 		return false;
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent((GLFWwindow *)window);
 
 	int version = gladLoadGL();
 	if (version == 0) {
@@ -41,7 +43,7 @@ bool libRenderer::Renderer::start()
 	}
 
     // Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode((GLFWwindow *)window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -51,11 +53,12 @@ bool libRenderer::Renderer::start()
 
 void libRenderer::Renderer::close()
 {
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
+    glfwSetWindowShouldClose((GLFWwindow *)window, GLFW_TRUE);
 }
 
 void libRenderer::Renderer::run()
 {
+	auto win = (GLFWwindow *)window;
     do{
 		// Clear the screen.
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -65,17 +68,17 @@ void libRenderer::Renderer::run()
 		{
 			VertexBufferHandle handle = vertexArrays[i];
 			glBindVertexArray(handle.vertexArrayObject);
-			glDrawElements(GL_TRIANGLES, handle.mesh->trianglesCount() * 3, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, handle.mesh->trianglesCount() * 3);
 		}
 		glBindVertexArray(0);
 
 		// Swap buffers
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(win);
 		glfwPollEvents();
 
 	} // Check if the ESC key was pressed or the window was closed
-	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		   glfwWindowShouldClose(window) == 0 );
+	while( glfwGetKey(win, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+		   glfwWindowShouldClose(win) == 0 );
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

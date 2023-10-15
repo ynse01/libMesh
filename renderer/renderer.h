@@ -2,8 +2,6 @@
 
 #include "../mesh.h"
 
-#include <GLFW/glfw3.h>
-
 namespace libRenderer {
     struct VertexBufferHandle {
         unsigned int vertexArrayObject;
@@ -19,7 +17,7 @@ namespace libRenderer {
             void addMesh(libMesh::Mesh *mesh);
             void removeMesh(libMesh::Mesh *mesh);
         private:
-            GLFWwindow *window;
+            void *window;
             std::vector<VertexBufferHandle> vertexArrays = std::vector<VertexBufferHandle>();
     };
 }
