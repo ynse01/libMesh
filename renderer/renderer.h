@@ -5,6 +5,8 @@
 namespace libRenderer {
     struct VertexBufferHandle {
         unsigned int vertexArrayObject;
+        unsigned int vertexBufferObject;
+        unsigned int elementBufferObject;
         libMesh::Mesh* mesh;
     };
 
@@ -18,6 +20,7 @@ namespace libRenderer {
             void removeMesh(libMesh::Mesh *mesh);
         private:
             void *window;
+            unsigned int shaderProgram;
             std::vector<VertexBufferHandle> vertexArrays = std::vector<VertexBufferHandle>();
     };
 }

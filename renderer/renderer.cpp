@@ -4,11 +4,29 @@
 #include "renderer.h"
 #include "../vertex.h"
 
-#include <stdio.h>
+#include <ostream>
 
 void ErrorCallback(int error, const char *description) {
-	fprintf(stderr, "Error: %s\n", description);
+	std::cerr << "Error: " << description << std::endl;
 }
+
+const char *vertexShaderSource =
+	"#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
+    "}\0";
+
+const char *fragmentShaderSource = 
+	"#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "uniform vec4 ourColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = ourColor;\n"
+    "}\n\0";
+
 
 bool libRenderer::Renderer::start()
 {
@@ -42,6 +60,46 @@ bool libRenderer::Renderer::start()
 		return false;
 	}
 
+	// build and compile our shader program
+    // ------------------------------------
+    // vertex shader
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+    // check for shader compile errors
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // fragment shader
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    // check for shader compile errors
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    // link shaders
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    // check for linking errors
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
     // Ensure we can capture the escape key being pressed below
 	glfwSetInputMode((GLFWwindow *)window, GLFW_STICKY_KEYS, GL_TRUE);
 
@@ -53,6 +111,17 @@ bool libRenderer::Renderer::start()
 
 void libRenderer::Renderer::close()
 {
+	// Delete OpenGL resources.
+	for(int i = 0; i < vertexArrays.size(); i++)
+	{
+		VertexBufferHandle handle = vertexArrays[i];
+		glDeleteVertexArrays(1, &handle.vertexArrayObject);
+		glDeleteBuffers(1, &handle.vertexBufferObject);
+		glDeleteBuffers(1, &handle.elementBufferObject);
+	}
+    glDeleteProgram(shaderProgram);
+
+	// Close the window
     glfwSetWindowShouldClose((GLFWwindow *)window, GLFW_TRUE);
 }
 
@@ -63,7 +132,13 @@ void libRenderer::Renderer::run()
 		// Clear the screen.
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Draw the meshes.
+		// Activate the shader.
+		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+		float greenValue = 0.5f;
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+		glUseProgram(shaderProgram);
+
+    	// Draw the meshes.
 		for(int i = 0; i < vertexArrays.size(); i++)
 		{
 			VertexBufferHandle handle = vertexArrays[i];
@@ -106,7 +181,7 @@ void libRenderer::Renderer::addMesh(libMesh::Mesh *mesh)
 
 	// Reset state machine
 	glBindVertexArray(0);
-	VertexBufferHandle handle = { vertexArrayObject, mesh };
+	VertexBufferHandle handle = { vertexArrayObject, vertexBufferObject, elementBufferObject, mesh };
 	vertexArrays.push_back(handle);
 }
 
