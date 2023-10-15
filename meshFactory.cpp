@@ -2,12 +2,12 @@
 #include <math.h>
 #include <iostream>
 
-#include "meshExtruder.h"
+#include "meshFactory.h"
 #include "plane.h"
 #include "point2.h"
 #include "vertex.h"
 
-libMesh::Mesh *libMesh::MeshExtruder::box(Point3 center, Size2 size, Vector3 xAxis, Vector3 yAxis, float length)
+libMesh::Mesh *libMesh::MeshFactory::box(Point3 center, Size2 size, Vector3 xAxis, Vector3 yAxis, float length)
 {
     std::vector<Vertex> vertices;
     std::vector<Index3> indices;
@@ -37,7 +37,7 @@ libMesh::Mesh *libMesh::MeshExtruder::box(Point3 center, Size2 size, Vector3 xAx
     return new Mesh(vertices, indices);
 }
 
-libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point3 center, float diameter, Vector3 xAxis, Vector3 yAxis, float length, unsigned int numFaces)
+libMesh::Mesh *libMesh::MeshFactory::cylinder(Point3 center, float diameter, Vector3 xAxis, Vector3 yAxis, float length, unsigned int numFaces)
 {
     std::vector<Vertex> vertices;
     std::vector<Index3> indices;
@@ -64,7 +64,7 @@ libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point3 center, float diameter, Ve
     return new Mesh(vertices, indices);
 }
 
-void libMesh::MeshExtruder::makeFaceFromRectangle(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Plane &plane, Size2 size)
+void libMesh::MeshFactory::makeFaceFromRectangle(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Plane &plane, Size2 size)
 {
     Point3 points [4];
     auto startIndex = vertices.size();
@@ -99,7 +99,7 @@ void libMesh::MeshExtruder::makeFaceFromRectangle(std::vector<Vertex> &vertices,
     //std::cout << "Triangle: 2, 1, 0" << std::endl;
 }
 
-void libMesh::MeshExtruder::makeFaceFromParallelCurves(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Point3 *left, Point3 *right, size_t size)
+void libMesh::MeshFactory::makeFaceFromParallelCurves(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Point3 *left, Point3 *right, size_t size)
 {
     unsigned int startIndex = vertices.size();
     for (int i = 0; i < size; i++)
@@ -124,14 +124,15 @@ void libMesh::MeshExtruder::makeFaceFromParallelCurves(std::vector<Vertex> &vert
     }
 }
 
-void libMesh::MeshExtruder::makeFaceAroundCenter(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Point3 center, Point3 *edge, size_t size)
+void libMesh::MeshFactory::makeFaceAroundCenter(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Point3 center, Point3 *edge, size_t size)
 {
     unsigned int centerIndex = vertices.size();
-    Vertex centerVertex = { center, Vector3(), Point2() };
+    auto normal = Point3::betweenPoints(center, edge[size >> 2]).cross(Point3::betweenPoints(center, edge[0]));
+    Vertex centerVertex = { center, normal, Point2() };
     vertices.push_back(centerVertex);
     for (int i = 0; i < size; i++)
     {
-        Vertex edgeVertex = { edge[i], Vector3(), Point2() };
+        Vertex edgeVertex = { edge[i], normal, Point2() };
         vertices.push_back(edgeVertex);
     }
     unsigned int previousIndex = centerIndex + 1;
