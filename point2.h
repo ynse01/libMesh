@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "vector2.h"
 
 namespace libMesh {
@@ -13,10 +15,16 @@ namespace libMesh {
             
             static Vector2 betweenPoints(Point2 p0, Point2 p1);
 
-            Point2 add(Vector2 vector);
-            Point2 subtract(Vector2 vector);
+            void add(Vector2 vector);
+            Point2 added(Vector2 vector);
+            void subtract(Vector2 vector);
+            Point2 subtracted(Vector2 vector);
 
             float distanceTo(Point2 other);
             float squaredDistanceTo(Point2 other);
+
+            friend std::ostream& operator <<(std::ostream& os, const Point2& pt) {
+                return os << "Point2(" << pt.x << ", " << pt.y << ")";
+            }
    };
 }

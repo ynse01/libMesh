@@ -1,55 +1,39 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <iostream>
 
 #include "meshExtruder.h"
 #include "plane.h"
+#include "point2.h"
+#include "vertex.h"
 
 libMesh::Mesh *libMesh::MeshExtruder::box(Point3 center, Size2 size, Vector3 xAxis, Vector3 yAxis, float length)
 {
     std::vector<Vertex> vertices;
     std::vector<Index3> indices;
-    auto plane = Plane(center, xAxis, yAxis);
-    auto halfSize = size.scale(0.5f);
-    // First the in-plane rectangle.
-    Point3 points [4];
-    points[0] = plane.get(halfSize);
-    halfSize.height = -halfSize.height;
-    points[1] = plane.get(halfSize);
-    halfSize.width = -halfSize.width;
-    points[2] = plane.get(halfSize);
-    halfSize.height = -halfSize.height;
-    points[3] = plane.get(halfSize);
-    makeFaceFromParallelCurves(vertices, indices, points, points + 2, 4);
-    // Secondly, the opposite rectangle.
-    auto extruded = xAxis.cross(yAxis).scale(length);
-    points[0] = points[0].add(extruded);
-    points[1] = points[1].add(extruded);
-    points[2] = points[2].add(extruded);
-    points[3] = points[3].add(extruded);
-    makeFaceFromParallelCurves(vertices, indices, points, points + 2, 4);
-    //     7 ===  4
-    //   //    // ||
-    //  3 === 0   5
-    //  ||  6 ||//
-    //  2 === 1
-    // Indices of front face
-    indices.push_back(Index3(0, 2, 1));
-    indices.push_back(Index3(0, 3, 2));
-    // Indices of top face
-    indices.push_back(Index3(3, 0, 7));
-    indices.push_back(Index3(4, 7, 0));
-    // Indices of left face
-    indices.push_back(Index3(2, 3, 6));
-    indices.push_back(Index3(3, 7, 6));
-    // Indices of bottom face
-    indices.push_back(Index3(1, 2, 6));
-    indices.push_back(Index3(1, 6, 5));
-    // Indices of right face
-    indices.push_back(Index3(0, 5, 4));
-    indices.push_back(Index3(0, 1, 5));
-    // Indices of back face
-    indices.push_back(Index3(4, 5, 6));
-    indices.push_back(Index3(4, 6, 7));
+    auto centerPlane = Plane(center, xAxis, yAxis);
+    auto zAxis = centerPlane.getNormal();
+    auto extruded = zAxis.scaled(length / 2);
+    // First the front face.
+    auto frontPlane = Plane(center.added(extruded), xAxis, yAxis);
+    makeFaceFromRectangle(vertices, indices, frontPlane, size);
+    // Secondly, the back face.
+    auto backPlane = Plane(center.subtracted(extruded), xAxis.scaled(-1), yAxis);
+    makeFaceFromRectangle(vertices, indices, backPlane, size);
+    // Top face
+    extruded = yAxis.scaled(size.height / -2);
+    auto topPlane = Plane(center.added(extruded), xAxis, zAxis);
+    makeFaceFromRectangle(vertices, indices, topPlane, size);
+    // Bottom face
+    auto bottomPlane = Plane(center.subtracted(extruded), xAxis.scaled(-1), zAxis);
+    makeFaceFromRectangle(vertices, indices, bottomPlane, size);
+    // Right face
+    extruded = xAxis.scaled(size.width / -2);
+    auto rightPlane = Plane(center.added(extruded), zAxis, yAxis);
+    makeFaceFromRectangle(vertices, indices, rightPlane, size);
+    // Left face
+    auto leftPlane = Plane(center.subtracted(extruded), zAxis.scaled(-1), yAxis);
+    makeFaceFromRectangle(vertices, indices, leftPlane, size);
     return new Mesh(vertices, indices);
 }
 
@@ -64,20 +48,55 @@ libMesh::Mesh *libMesh::MeshExtruder::cylinder(Point3 center, float diameter, Ve
     // Front face
     for(int i = 0; i < numFaces; i++)
     {
-        points[i] = plane.get(Size2(sin(angle * i) * radius, cos(angle * i) * radius));
+        points[i] = plane.get(Point2(sin(angle * i) * radius, cos(angle * i) * radius));
     }
     makeFaceAroundCenter(vertices, indices, center, points, numFaces);
 
     // Back face
-    auto extruded = plane.getNormal().scale(length);
+    auto extruded = plane.getNormal().scaled(length);
     for(int i = 0; i < numFaces; i++)
     {
-        points[numFaces + i] = points[i].add(extruded);
+        points[numFaces + i] = points[i].added(extruded);
     }
     makeFaceAroundCenter(vertices, indices, center, points + numFaces, numFaces);
 
     makeFaceFromParallelCurves(vertices, indices, points, points + numFaces, numFaces);
     return new Mesh(vertices, indices);
+}
+
+void libMesh::MeshExtruder::makeFaceFromRectangle(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Plane &plane, Size2 size)
+{
+    Point3 points [4];
+    auto startIndex = vertices.size();
+    auto normal = plane.getNormal();
+    Point2 corner = { size.width * 0.5f, size.height * 0.5f };
+    auto position = plane.get(corner);
+    //   3 == 0
+    //   |    |
+    //   2 == 1
+    Vertex vertex = { position, normal, Point2(1, 1) };
+    vertices.push_back(vertex);
+    //std::cout << "0: " << corner << std::endl;
+    corner.y = -corner.y;
+    position = plane.get(corner);
+    vertex = { position, normal, Point2(1, 0) };
+    vertices.push_back(vertex);
+    //std::cout << "1: " << corner << std::endl;
+    corner.x = -corner.x;
+    position = plane.get(corner);
+    vertex = { position, normal, Point2(0, 0) };
+    vertices.push_back(vertex);
+    //std::cout << "2: " << corner << std::endl;
+    corner.y = -corner.y;
+    position = plane.get(corner);
+    vertex = { position, normal, Point2(0, 1) };
+    vertices.push_back(vertex);
+    //std::cout << "3: " << corner << std::endl;
+    // Create 2 triangles between the four corners.
+    indices.push_back(Index3(startIndex, startIndex + 3, startIndex + 2));
+    //std::cout << "Triangle: 0, 3, 2" << std::endl;
+    indices.push_back(Index3(startIndex + 2, startIndex + 1, startIndex));
+    //std::cout << "Triangle: 2, 1, 0" << std::endl;
 }
 
 void libMesh::MeshExtruder::makeFaceFromParallelCurves(std::vector<Vertex> &vertices, std::vector<Index3> &indices, Point3 *left, Point3 *right, size_t size)

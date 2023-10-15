@@ -23,12 +23,26 @@ libMesh::Vector3 libMesh::Point3::betweenPoints(Point3 p0, Point3 p1)
     return Vector3(p1.x - p0.x, p1.y - p0.y, p1.z - p0.z);
 }
 
-libMesh::Point3 libMesh::Point3::add(Vector3 vector)
+void libMesh::Point3::add(Vector3 vector)
+{
+    x += vector.x;
+    y += vector.y;
+    z += vector.z;
+}
+
+libMesh::Point3 libMesh::Point3::added(Vector3 vector)
 {
     return Point3(x + vector.x, y + vector.y, z + vector.z);
 }
 
-libMesh::Point3 libMesh::Point3::subtract(Vector3 vector)
+void libMesh::Point3::subtract(Vector3 vector)
+{
+    x -= vector.x;
+    y -= vector.y;
+    z -= vector.z;
+}
+
+libMesh::Point3 libMesh::Point3::subtracted(Vector3 vector)
 {
     return Point3(x - vector.x, y - vector.y, z - vector.z);
 }
@@ -44,7 +58,17 @@ float libMesh::Point3::squaredDistanceTo(Point3 other)
     return diff.dot(diff);
 }
 
-libMesh::Point3 libMesh::Point3::transform(Transformation t)
+void libMesh::Point3::transform(Transformation t)
+{
+    float newX = (x * t.m00 + y * t.m10 + z * t.m20 + t.m03) / t.m33;
+    float newY = (x * t.m01 + y * t.m11 + z * t.m21 + t.m13) / t.m33;
+    float newZ = (x * t.m02 + y * t.m12 + z * t.m22 + t.m23) / t.m33;
+    x = newX;
+    y = newY;
+    z = newZ;
+}
+
+libMesh::Point3 libMesh::Point3::transformed(Transformation t)
 {
     float newX = (x * t.m00 + y * t.m10 + z * t.m20 + t.m03) / t.m33;
     float newY = (x * t.m01 + y * t.m11 + z * t.m21 + t.m13) / t.m33;

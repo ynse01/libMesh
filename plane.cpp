@@ -5,12 +5,12 @@ libMesh::Plane::Plane(Point3 origin, Vector3 xAxis, Vector3 yAxis)
 {
 }
 
-libMesh::Point3 libMesh::Plane::get(Size2 index)
+libMesh::Point3 libMesh::Plane::get(Point2 pos)
 {
     return 
         origin
-            .add(xAxis.scale(index.width))
-            .add(yAxis.scale(index.height));
+            .added(xAxis.scaled(pos.x))
+            .added(yAxis.scaled(pos.y));
 }
 
 libMesh::Vector3 libMesh::Plane::getNormal()

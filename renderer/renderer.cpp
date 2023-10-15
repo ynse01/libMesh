@@ -65,7 +65,7 @@ void libRenderer::Renderer::run()
 		{
 			VertexBufferHandle handle = vertexArrays[i];
 			glBindVertexArray(handle.vertexArrayObject);
-			glDrawElements(GL_LINES, handle.mesh->trianglesCount() * 3, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, handle.mesh->trianglesCount() * 3, GL_UNSIGNED_INT, 0);
 		}
 		glBindVertexArray(0);
 
