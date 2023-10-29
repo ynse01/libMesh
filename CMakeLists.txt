@@ -6,5 +6,5 @@ add_library(Mesh mesh.cpp vector2.cpp vector3.cpp point2.cpp point3.cpp transfor
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_subdirectory(renderer)
+add_subdirectory(yaui)
 add_subdirectory(test)

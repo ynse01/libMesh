@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../renderer/renderer.h"
+#include "../yaui/renderer.h"
 #include "../meshFactory.h"
 #include "../point3.h"
 #include "../size2.h"

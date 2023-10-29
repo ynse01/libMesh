@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-target_link_libraries(MeshTest Mesh Renderer GTest::gtest_main)
+target_link_libraries(MeshTest Mesh YetAnotherUI GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(MeshTest)

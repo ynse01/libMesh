@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
-project(Renderer)
+project(YetAnotherUI)
 
 find_package(OpenGL REQUIRED)
 
-add_library(Renderer renderer.cpp)
+add_library(YetAnotherUI label.cpp renderer.cpp)
 
 ### GLFW ###
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -19,4 +19,8 @@ add_library(glad "${GLAD_DIR}/src/glad.c")
 target_include_directories(glad PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 
-target_link_libraries(Renderer glfw glad OpenGL::GL)
+## FreeType ##
+find_package(Freetype REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS})
+
+target_link_libraries(YetAnotherUI glfw glad OpenGL::GL ${FREETYPE_LIBRARIES})
