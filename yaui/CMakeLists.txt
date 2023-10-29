@@ -3,7 +3,7 @@ project(YetAnotherUI)
 
 find_package(OpenGL REQUIRED)
 
-add_library(YetAnotherUI label.cpp renderer.cpp)
+add_library(YetAnotherUI font.cpp label.cpp renderer.cpp shader.cpp shaderCode.cpp)
 
 ### GLFW ###
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
