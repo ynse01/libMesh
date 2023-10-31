@@ -3,8 +3,8 @@
 namespace YetAnotherUI {
     class Renderable {
         public:
-            void Initialize();
-            void Render();
-            void Destroy();
+            virtual void Initialize() = 0;
+            virtual void Render() = 0;
+            virtual void Destroy() = 0;
     };
 }

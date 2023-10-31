@@ -5,6 +5,7 @@
 #include "../vertex.h"
 
 #include <ostream>
+#include <vector>
 
 void ErrorCallback(int error, const char *description) {
 	std::cerr << "Error: " << description << std::endl;
@@ -28,7 +29,7 @@ const char *fragmentShaderSource =
     "}\n\0";
 
 
-bool libRenderer::Renderer::start()
+bool YetAnotherUI::Renderer::start()
 {
     if (!glfwInit())
     {
@@ -109,23 +110,21 @@ bool libRenderer::Renderer::start()
     return true;
 }
 
-void libRenderer::Renderer::close()
+void YetAnotherUI::Renderer::close()
 {
 	// Delete OpenGL resources.
-	for(int i = 0; i < vertexArrays.size(); i++)
+	for(int i = 0; i < mRenderables.size(); i++)
 	{
-		VertexBufferHandle handle = vertexArrays[i];
-		glDeleteVertexArrays(1, &handle.vertexArrayObject);
-		glDeleteBuffers(1, &handle.vertexBufferObject);
-		glDeleteBuffers(1, &handle.elementBufferObject);
+		mRenderables[i]->Destroy();
 	}
+	mRenderables.clear();
     glDeleteProgram(shaderProgram);
 
 	// Close the window
     glfwSetWindowShouldClose((GLFWwindow *)window, GLFW_TRUE);
 }
 
-void libRenderer::Renderer::run()
+void YetAnotherUI::Renderer::run()
 {
 	auto win = (GLFWwindow *)window;
     do{
@@ -139,11 +138,9 @@ void libRenderer::Renderer::run()
 		glUseProgram(shaderProgram);
 
     	// Draw the meshes.
-		for(int i = 0; i < vertexArrays.size(); i++)
+		for(int i = 0; i < mRenderables.size(); i++)
 		{
-			VertexBufferHandle handle = vertexArrays[i];
-			glBindVertexArray(handle.vertexArrayObject);
-			glDrawArrays(GL_TRIANGLES, 0, handle.mesh->trianglesCount() * 3);
+			mRenderables[i]->Render();
 		}
 		glBindVertexArray(0);
 
@@ -159,39 +156,18 @@ void libRenderer::Renderer::run()
 	glfwTerminate();
 }
 
-void libRenderer::Renderer::addMesh(libMesh::Mesh *mesh)
+void YetAnotherUI::Renderer::add(Renderable *renderable)
 {
-	GLuint vertexArrayObject;
-	GLuint vertexBufferObject, elementBufferObject;
-	glGenVertexArrays(1, &vertexArrayObject);
-	glGenBuffers(1, &vertexBufferObject);
-	glGenBuffers(1, &elementBufferObject);
-
-	glBindVertexArray(vertexArrayObject);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, mesh->verticesCount() * sizeof(libMesh::Vertex), mesh->getVertexPtr(), GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->trianglesCount() * 3 * sizeof(unsigned int), mesh->getIndexPtr(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(libMesh::Vertex), (void*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(libMesh::Vertex), (void*)offsetof(libMesh::Vertex, normal));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(libMesh::Vertex), (void*)offsetof(libMesh::Vertex, texCoord));
-
-	// Reset state machine
-	glBindVertexArray(0);
-	VertexBufferHandle handle = { vertexArrayObject, vertexBufferObject, elementBufferObject, mesh };
-	vertexArrays.push_back(handle);
+	renderable->Initialize();
+	mRenderables.push_back(renderable);
 }
 
-void libRenderer::Renderer::removeMesh(libMesh::Mesh *mesh)
+void YetAnotherUI::Renderer::remove(Renderable *renderable)
 {
-	unsigned int needle = mesh->getId();
-	for(int i; i < vertexArrays.size(); i++) {
-		if (vertexArrays[0].mesh->getId() == needle)
-		{
-			vertexArrays.erase(vertexArrays.begin() + i);
+	renderable->Destroy();
+	for (auto i = mRenderables.begin(); i < mRenderables.end(); i++) {
+        if(*i == renderable) {
+			mRenderables.erase(i);
 		}
-	}
+    }
 }

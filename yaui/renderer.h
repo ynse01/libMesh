@@ -1,26 +1,21 @@
 #pragma once
 
-#include "../mesh.h"
+#include <vector>
 
-namespace libRenderer {
-    struct VertexBufferHandle {
-        unsigned int vertexArrayObject;
-        unsigned int vertexBufferObject;
-        unsigned int elementBufferObject;
-        libMesh::Mesh* mesh;
-    };
+#include "renderable.h"
 
+namespace YetAnotherUI {
     class Renderer {
         public:
             bool start();
             void close();
             void run();
 
-            void addMesh(libMesh::Mesh *mesh);
-            void removeMesh(libMesh::Mesh *mesh);
+            void add(Renderable *renderable);
+            void remove(Renderable *renderable);
         private:
             void *window;
             unsigned int shaderProgram;
-            std::vector<VertexBufferHandle> vertexArrays = std::vector<VertexBufferHandle>();
+            std::vector<Renderable*> mRenderables = std::vector<Renderable*>();
     };
 }
