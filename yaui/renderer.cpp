@@ -8,7 +8,11 @@
 #include <vector>
 
 void ErrorCallback(int error, const char *description) {
-	std::cerr << "Error: " << description << std::endl;
+	std::cerr << "Error: " << error << ", " << description << std::endl;
+}
+
+void ErrorCallback(int error, const char *desc0, const char*desc1) {
+	std::cerr << "Error: " << error << ", "  << desc0 << " " << desc1 << std::endl;
 }
 
 const char *vertexShaderSource =
@@ -48,7 +52,7 @@ bool YetAnotherUI::Renderer::start()
     // Open a window and create its OpenGL context
 	window = glfwCreateWindow(1024, 768, "Renderer", NULL, NULL);
 	if( window == NULL ){
-		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible.\n" );
+		ErrorCallback(0, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		return false;
 	}
@@ -56,7 +60,7 @@ bool YetAnotherUI::Renderer::start()
 
 	int version = gladLoadGL();
 	if (version == 0) {
-		fprintf(stderr, "Failed to initialize OpenGL context.\n" );
+		ErrorCallback(0, "Failed to initialize OpenGL context.");
 		glfwTerminate();
 		return false;
 	}
@@ -74,7 +78,7 @@ bool YetAnotherUI::Renderer::start()
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        ErrorCallback(success, "SHADER::VERTEX::COMPILATION_FAILED", infoLog);
     }
     // fragment shader
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -85,7 +89,7 @@ bool YetAnotherUI::Renderer::start()
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        ErrorCallback(success, "SHADER::FRAGMENT::COMPILATION_FAILED", infoLog);
     }
     // link shaders
     shaderProgram = glCreateProgram();
@@ -96,7 +100,7 @@ bool YetAnotherUI::Renderer::start()
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        ErrorCallback(success, "SHADER::PROGRAM::LINKING_FAILED", infoLog);
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -152,7 +156,9 @@ void YetAnotherUI::Renderer::run()
 	while( glfwGetKey(win, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
 		   glfwWindowShouldClose(win) == 0 );
 
-	// Close OpenGL window and terminate GLFW
+    glDeleteProgram(shaderProgram);
+    
+    // Close OpenGL window and terminate GLFW
 	glfwTerminate();
 }
 

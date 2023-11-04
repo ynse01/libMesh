@@ -8,7 +8,7 @@
 #include "../point3.h"
 
 namespace YetAnotherUI {
-    class Shader : Renderable {
+    class Shader : public Renderable {
         public:
             Shader(const std::string &vertexCode, const std::string &fragmentCode);
             ~Shader();
@@ -17,6 +17,7 @@ namespace YetAnotherUI {
             void Render();
             void Destroy();
 
+            int getIndexOfUniform(const char *name);
             void setUniform(unsigned int index, libMesh::Color color);
             void setUniform(unsigned int index, libMesh::Point3 point);
             void setUniform(unsigned int index, libMesh::Point2 point);

@@ -9,6 +9,7 @@
 #include FT_FREETYPE_H
 
 FT_Library library = NULL;
+void ErrorCallback(int error, const char *description);
 
 YetAnotherUI::Font::Font(std::string &path)
 {
@@ -20,8 +21,7 @@ YetAnotherUI::Font::Font(std::string &path)
             std::cout << "ERROR:FREETYPE: Could not init FreeType library" << std::endl;
             return;
         }
-        mFace = malloc(sizeof(FT_FaceRec));
-        FT_Face face = reinterpret_cast<FT_Face>(mFace);
+        FT_Face face;
         error = FT_New_Face(library, path.c_str(), 0, &face);
         if (error == FT_Err_Unknown_File_Format) {
             // Not supported font file
@@ -33,6 +33,7 @@ YetAnotherUI::Font::Font(std::string &path)
             return;
         }
         FT_Set_Pixel_Sizes(face, 0, 48);
+        mFace = face;
 
         mCharacters = std::map<char, Character>();
     }
@@ -53,8 +54,8 @@ void YetAnotherUI::Font::Initialize()
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     FT_Face face = reinterpret_cast<FT_Face>(mFace);
     for (unsigned char c= 0; c < 128; c++) {
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-            std::cout << "ERROR:FREETYPE: Fload the load glyph" << std::endl;
+        if (FT_Error error = FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+            ErrorCallback(error, "FREETYPE: Failed to the load glyph");
             continue;
         }
         // Generate a texture per character

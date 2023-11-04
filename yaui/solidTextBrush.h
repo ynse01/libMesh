@@ -12,14 +12,18 @@ namespace YetAnotherUI {
             
             libMesh::Color color;
 
-            void Initialize() { mShader.Initialize(); }
+            void Initialize() { 
+                mShader.Initialize();
+                mUniformIndex = mShader.getIndexOfUniform("textColor");
+            }
             void Render() { 
                 mShader.Render();
-                mShader.setUniform(0, color);
+                mShader.setUniform(mUniformIndex, color);
             }
             void Destroy() { mShader.Destroy(); }
         private:
             Shader mShader;
+            int mUniformIndex;
             static const std::string sVertexShaderCode;
             static const std::string sFragmentShaderCode;
     };

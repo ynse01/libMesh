@@ -5,18 +5,26 @@
 
 #include <ostream>
 
-void ErrorCallback(int error, const char *description) {
-	std::cerr << "Error: " << description << std::endl;
-}
+void ErrorCallback(int code, const char *description);
+void ErrorCallback(int code, const char *desc0, const char *desc1);
 
 YetAnotherUI::Shader::Shader(const std::string &vertexCode, const std::string &fragmentCode)
 : mVertexShaderCode(vertexCode), mFragmentShaderCode(fragmentCode)
 {
+    mShaderId = 0;
+}
+
+YetAnotherUI::Shader::~Shader()
+{
+    if (mShaderId != 0) {
+        glDeleteProgram(mShaderId);
+    }
+    mShaderId = 0;
 }
 
 void YetAnotherUI::Shader::Initialize()
 {
-    if (mShaderId > 0) return;
+    if (mShaderId != 0) return;
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
@@ -31,7 +39,7 @@ void YetAnotherUI::Shader::Initialize()
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        ErrorCallback(success, "SHADER::VERTEX::COMPILATION_FAILED", infoLog);
     }
     // fragment shader
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -43,7 +51,7 @@ void YetAnotherUI::Shader::Initialize()
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        ErrorCallback(success, "SHADER::FRAGMENT::COMPILATION_FAILED\n", infoLog);
     }
     // link shaders
     mShaderId = glCreateProgram();
@@ -54,21 +62,32 @@ void YetAnotherUI::Shader::Initialize()
     glGetProgramiv(mShaderId, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(mShaderId, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        ErrorCallback(success, "SHADER::PROGRAM::LINKING_FAILED\n", infoLog);
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    //std::cout << "Finished linking shader with id:  " << mShaderId << std::endl;
 }
 
 void YetAnotherUI::Shader::Render()
 {
+    if (mShaderId == 0) {
+        ErrorCallback(0, "Trying to render using an uninitialized shader.");
+    }
     glUseProgram(mShaderId);
 }
 
 void YetAnotherUI::Shader::Destroy()
 {
-    glDeleteShader(mShaderId);
+    if (mShaderId != 0) {
+        glDeleteShader(mShaderId);
+    }
     mShaderId = 0;
+}
+
+int YetAnotherUI::Shader::getIndexOfUniform(const char *name)
+{
+    return glGetUniformLocation(mShaderId, name);
 }
 
 void YetAnotherUI::Shader::setUniform(unsigned int index, libMesh::Color color)

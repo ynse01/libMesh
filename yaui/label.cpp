@@ -2,8 +2,8 @@
 
 #include "label.h"
 
-YetAnotherUI::Label::Label(Font &font, std::string &text, SolidTextBrush& brush)
- : mFont(font), mText(text), mBrush(brush)
+YetAnotherUI::Label::Label(Font &font, std::string &text, SolidTextBrush& brush, float scale)
+ : mFont(font), mText(text), mBrush(brush), mScale(scale)
 {
 }
 
@@ -29,11 +29,13 @@ void YetAnotherUI::Label::Initialize()
     glBindVertexArray(0);
 
     mBrush.Initialize();
+    mFont.Initialize();
 }
 
 void YetAnotherUI::Label::Render()
 {
     mBrush.Render();
+    mFont.Render();
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(mVAO);
 
@@ -64,7 +66,7 @@ void YetAnotherUI::Label::Render()
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        // Render the quads
+        // Render the quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // Move to the next charcter
         x += (ch.Advance >> 6) * mScale;

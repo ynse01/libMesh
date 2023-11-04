@@ -7,9 +7,9 @@
 #include "../point2.h"
 
 namespace YetAnotherUI {
-    class Label : Renderable {
+    class Label : public Renderable {
         public:
-            Label(Font& font, std::string& text, SolidTextBrush& brush);
+            Label(Font& font, std::string& text, SolidTextBrush& brush, float scale);
 
             std::string &getText() { return mText; }
             void setText(const std::string &text);
