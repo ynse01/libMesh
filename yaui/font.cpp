@@ -35,6 +35,8 @@ YetAnotherUI::Font::Font(std::string &path)
         FT_Set_Pixel_Sizes(face, 0, 48);
         mFace = face;
 
+        mHasKerning = FT_HAS_KERNING(face);
+
         mCharacters = std::map<char, Character>();
     }
 }
@@ -44,6 +46,18 @@ YetAnotherUI::Font::~Font()
     FT_Face face = reinterpret_cast<FT_Face>(mFace);
     FT_Done_Face(face);
     mFace = NULL;
+}
+
+long int YetAnotherUI::Font::getKerning(char current, char previous)
+{
+    FT_Face face = reinterpret_cast<FT_Face>(mFace);
+    FT_Vector delta;
+    if (mHasKerning) {
+        FT_Get_Kerning(face, previous, current, FT_KERNING_DEFAULT, &delta);
+    } else {
+        delta = FT_Vector();
+    }
+    return delta.x >> 6;
 }
 
 void YetAnotherUI::Font::Initialize()
@@ -73,7 +87,7 @@ void YetAnotherUI::Font::Initialize()
             textureId, 
             {face->glyph->bitmap.width, face->glyph->bitmap.rows},
             {face->glyph->bitmap_left, face->glyph->bitmap_top},
-            face->glyph->advance.x
+            face->glyph->advance.x >> 6
         };
         mCharacters.insert(std::pair<char, Character>(c, character));
     }

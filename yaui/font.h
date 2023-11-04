@@ -19,12 +19,14 @@ namespace YetAnotherUI {
             ~Font();
 
             Character getCharacter(char c) { return mCharacters[c]; }
+            long int getKerning(char current, char previous);
 
             void Initialize();
             void Render();
             void Destroy();
         private:
             void *mFace;
+            bool mHasKerning;
             std::map<char, Character> mCharacters;
     };
 }

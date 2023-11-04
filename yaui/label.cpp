@@ -43,11 +43,14 @@ void YetAnotherUI::Label::Render()
     float y = mPosition.y;
 
     // Iterate through all characters
+    char previous = 0;
     for (std::string::const_iterator c = mText.begin(); c != mText.end(); c++) {
         Character ch = mFont.getCharacter(*c);
 
         float xpos = x + ch.Bearing[0] * mScale;
         float ypos = y - (ch.Size[1] - ch.Bearing[1]) * mScale;
+
+        xpos += mFont.getKerning(*c, previous) * mScale;
 
         float w = ch.Size[0] * mScale;
         float h = ch.Size[1] * mScale;
@@ -69,7 +72,8 @@ void YetAnotherUI::Label::Render()
         // Render the quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // Move to the next charcter
-        x += (ch.Advance >> 6) * mScale;
+        x += ch.Advance * mScale;
+        previous = *c;
     }
     // Restore state
     glBindVertexArray(0);
