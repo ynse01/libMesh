@@ -4,21 +4,21 @@
 #include "shader.h"
 
 namespace YetAnotherUI {
-    class SolidTextBrush {
+    class SolidBrush {
         public:
-            SolidTextBrush() : SolidTextBrush(libMesh::Color()) {}
-            SolidTextBrush(libMesh::Color color) : mShader(Shader(sVertexShaderCode, sFragmentShaderCode)), color(color) {}
-            SolidTextBrush(const SolidTextBrush& other) : SolidTextBrush(other.color) {}
+            SolidBrush() : SolidBrush(libMesh::Color()) {}
+            SolidBrush(libMesh::Color color) : mShader(Shader(sVertexShaderCode, sFragmentShaderCode)), color(color) {}
+            SolidBrush(const SolidBrush& other) : SolidBrush(other.color) {}
             
             libMesh::Color color;
 
             void Initialize() { 
                 mShader.Initialize();
-                mUniformIndex = mShader.getIndexOfUniform("textColor");
+                mUniformIndex = mShader.getIndexOfUniform("matColor");
             }
             void Render() { 
-                mShader.Render();
                 mShader.setUniform(mUniformIndex, color);
+                mShader.Render();
             }
             void Destroy() { mShader.Destroy(); }
         private:

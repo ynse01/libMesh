@@ -10,7 +10,7 @@
 namespace YetAnotherUI {
     class Shader : public Renderable {
         public:
-            Shader(const std::string &vertexCode, const std::string &fragmentCode);
+            Shader(const char *vertexCode, const char *fragmentCode);
             ~Shader();
 
             void Initialize();
@@ -23,7 +23,7 @@ namespace YetAnotherUI {
             void setUniform(unsigned int index, libMesh::Point2 point);
         private:
             unsigned int mShaderId;
-            const std::string mVertexShaderCode;
-            const std::string mFragmentShaderCode;
+            const char *mVertexShaderCode;
+            const char *mFragmentShaderCode;
     };
 }

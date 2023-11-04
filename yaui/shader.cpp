@@ -8,7 +8,7 @@
 void ErrorCallback(int code, const char *description);
 void ErrorCallback(int code, const char *desc0, const char *desc1);
 
-YetAnotherUI::Shader::Shader(const std::string &vertexCode, const std::string &fragmentCode)
+YetAnotherUI::Shader::Shader(const char *vertexCode, const char *fragmentCode)
 : mVertexShaderCode(vertexCode), mFragmentShaderCode(fragmentCode)
 {
     mShaderId = 0;
@@ -29,8 +29,7 @@ void YetAnotherUI::Shader::Initialize()
     // ------------------------------------
     // vertex shader
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    const char *vertexSource = mVertexShaderCode.c_str();
-    glShaderSource(vertexShader, 1, &vertexSource, NULL);
+    glShaderSource(vertexShader, 1, &mVertexShaderCode, NULL);
     glCompileShader(vertexShader);
     // check for shader compile errors
     int success;
@@ -43,8 +42,7 @@ void YetAnotherUI::Shader::Initialize()
     }
     // fragment shader
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    const char *fragmentSource = mFragmentShaderCode.c_str();
-    glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+    glShaderSource(fragmentShader, 1, &mFragmentShaderCode, NULL);
     glCompileShader(fragmentShader);
     // check for shader compile errors
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);

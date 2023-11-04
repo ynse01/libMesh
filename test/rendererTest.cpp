@@ -18,12 +18,15 @@ TEST(Renderer, Render) {
   auto renderer = Renderer();
   auto size = Size2(0.6f, 0.5f);
   auto box = MeshFactory::box(Point3(), size, Vector3::XAxis, Vector3::YAxis, 0.1f);
-  auto boxVisual = MeshRenderable(*box);
+  auto boxColor = Color(0.0, 1.0, 0.0, 1.0);
+  auto boxBrush = SolidBrush(boxColor);
+  auto boxVisual = MeshRenderable(*box, boxBrush);
   auto fontPath = std::string("/usr/share/fonts/truetype/Sarai/Sarai.ttf");
   auto font = Font(fontPath);
   auto text = std::string("Hello world!");
-  auto textBrush = SolidTextBrush(Color());
-  auto label = Label(font, text, textBrush, 0.005f);
+  auto textColor = Color(0.0, 0.0, 1.0, 1.0);
+  //auto textBrush = SolidTextBrush(textColor);
+  //auto label = Label(font, text, textBrush, 0.005f);
   // Act
   bool actual = renderer.start();
   renderer.add(&boxVisual);

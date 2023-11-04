@@ -24,17 +24,21 @@ void YetAnotherUI::MeshRenderable::Initialize()
 
 	// Reset state machine
 	glBindVertexArray(0);
+
+	mBrush.Initialize();
 }
 
 void YetAnotherUI::MeshRenderable::Render()
 {
-    glBindVertexArray(mVAO);
+	glBindVertexArray(mVAO);
+    mBrush.Render();
 	glDrawArrays(GL_TRIANGLES, 0, mMesh.trianglesCount() * 3);
 	glBindVertexArray(0);
 }
 
 void YetAnotherUI::MeshRenderable::Destroy()
 {
+	mBrush.Destroy();
     glDeleteBuffers(1, &mEBO);
     glDeleteBuffers(1, &mVBO);
     glDeleteVertexArrays(1, &mVAO);
