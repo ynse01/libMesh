@@ -17,8 +17,8 @@ namespace YetAnotherUI {
                 mUniformIndex = mShader.getIndexOfUniform("matColor");
             }
             void Render() { 
-                mShader.setUniform(mUniformIndex, color);
                 mShader.Render();
+                mShader.setUniform(mUniformIndex, color);
             }
             void Destroy() { mShader.Destroy(); }
         private:

@@ -30,9 +30,9 @@ void YetAnotherUI::MeshRenderable::Initialize()
 
 void YetAnotherUI::MeshRenderable::Render()
 {
+	mBrush.Render();
 	glBindVertexArray(mVAO);
-    mBrush.Render();
-	glDrawArrays(GL_TRIANGLES, 0, mMesh.trianglesCount() * 3);
+    glDrawArrays(GL_TRIANGLES, 0, mMesh.trianglesCount() * 3);
 	glBindVertexArray(0);
 }
 

@@ -13,6 +13,13 @@ namespace libMesh {
             float blue;
             float alpha;
 
+            Color& operator=(const Color& other) { 
+                red = other.red;
+                green = other.green;
+                blue = other.blue;
+                alpha = other.alpha;
+            }
+
             friend std::ostream& operator <<(std::ostream& os, const Color& col) {
                 return os << "RGBA(" << col.red << ", " << col.green << ", " << col.blue << ", " << col.alpha << ")";
             }

@@ -25,12 +25,12 @@ TEST(Renderer, Render) {
   auto font = Font(fontPath);
   auto text = std::string("Hello world!");
   auto textColor = Color(0.0, 0.0, 1.0, 1.0);
-  //auto textBrush = SolidTextBrush(textColor);
-  //auto label = Label(font, text, textBrush, 0.005f);
+  auto textBrush = SolidTextBrush(textColor);
+  auto label = Label(font, text, textBrush, 0.005f);
   // Act
   bool actual = renderer.start();
   renderer.add(&boxVisual);
-  //renderer.add(&label);
+  renderer.add(&label);
   renderer.run();
   renderer.close();
   // Assert
