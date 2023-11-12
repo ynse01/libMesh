@@ -48,12 +48,14 @@ YetAnotherUI::Font::~Font()
     mFace = NULL;
 }
 
-long int YetAnotherUI::Font::getKerning(char current, char previous)
+signed long YetAnotherUI::Font::getKerning(char current, char previous)
 {
     FT_Face face = reinterpret_cast<FT_Face>(mFace);
     FT_Vector delta;
     if (mHasKerning) {
-        FT_Get_Kerning(face, previous, current, FT_KERNING_DEFAULT, &delta);
+        FT_UInt prevIndex = FT_Get_Char_Index(face, previous);
+        FT_UInt currentIndex = FT_Get_Char_Index(face, current);
+        FT_Get_Kerning(face, prevIndex, currentIndex, FT_KERNING_DEFAULT, &delta);
     } else {
         delta = FT_Vector();
     }

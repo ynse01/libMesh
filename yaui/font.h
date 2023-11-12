@@ -19,7 +19,7 @@ namespace YetAnotherUI {
             ~Font();
 
             Character getCharacter(char c) { return mCharacters[c]; }
-            long int getKerning(char current, char previous);
+            signed long getKerning(char current, char previous);
 
             void Initialize();
             void Render();

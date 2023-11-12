@@ -21,7 +21,7 @@ TEST(Renderer, Render) {
   auto boxColor = Color(0.0, 1.0, 0.0, 1.0);
   auto boxBrush = SolidBrush(boxColor);
   auto boxVisual = MeshRenderable(*box, boxBrush);
-  auto fontPath = std::string("/usr/share/fonts/truetype/Sarai/Sarai.ttf");
+  auto fontPath = std::string("/usr/share/fonts/truetype/ubuntu/Ubuntu-R.ttf");
   auto font = Font(fontPath);
   auto text = std::string("Hello world!");
   auto textColor = Color(0.0, 0.0, 1.0, 1.0);
