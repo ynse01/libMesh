@@ -18,6 +18,7 @@ namespace libMesh {
                 green = other.green;
                 blue = other.blue;
                 alpha = other.alpha;
+                return *this;
             }
 
             friend std::ostream& operator <<(std::ostream& os, const Color& col) {

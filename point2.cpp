@@ -1,4 +1,5 @@
 #include "point2.h"
+#include "math.h"
 
 #include <cmath>
 
@@ -50,4 +51,14 @@ float libMesh::Point2::squaredDistanceTo(Point2 other)
 {
     Vector2 diff = betweenPoints(*this, other);
     return diff.dot(diff);
+}
+
+bool libMesh::Point2::operator==(const Point2 &other) const
+{
+    return Math::Equals(x, other.x) && Math::Equals(y, other.y);
+}
+
+bool libMesh::Point2::operator!=(const Point2 &other) const
+{
+    return !(*this == other);
 }

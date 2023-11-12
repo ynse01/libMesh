@@ -16,6 +16,9 @@ namespace libMesh {
                 return Size3(width * scale, height * scale, depth * scale);
             }
 
+            bool operator ==(const Size3& other) const { return Math::Equals(width, other.width) && Math::Equals(height, other.height) && Math::Equals(depth, other.depth); }
+            bool operator !=(const Size3& other) const { return !(*this == other); }
+
             friend std::ostream& operator <<(std::ostream& os, const Size3& size) {
                 return os << "Size3(" << size.width << ", " << size.height << ", " << size.depth << ")";
             }

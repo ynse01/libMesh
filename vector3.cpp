@@ -60,3 +60,13 @@ libMesh::Vector3 libMesh::Vector3::scaled(float value)
 {
     return Vector3(x * value, y * value, z * value);
 }
+
+bool libMesh::Vector3::operator==(const Vector3 &other) const
+{
+    return false;
+}
+
+bool libMesh::Vector3::operator!=(const Vector3 &other) const
+{
+    return !(*this == other);
+}

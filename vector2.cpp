@@ -27,3 +27,13 @@ libMesh::Vector2 libMesh::Vector2::scaled(float value)
 {
     return Vector2(x * value, y * value);
 }
+
+bool libMesh::Vector2::operator==(const Vector2 &other) const
+{
+    return false;
+}
+
+bool libMesh::Vector2::operator!=(const Vector2 &other) const
+{
+    return !(*this == other);
+}

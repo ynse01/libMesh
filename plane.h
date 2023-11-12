@@ -14,5 +14,8 @@ namespace libMesh {
 
             Point3 get(Point2 index);
             Vector3 getNormal();
+
+            bool operator ==(const Plane& other) const;
+            bool operator !=(const Plane& other) const;
     };
 }

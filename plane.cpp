@@ -17,3 +17,13 @@ libMesh::Vector3 libMesh::Plane::getNormal()
 {
     return xAxis.cross(yAxis);
 }
+
+bool libMesh::Plane::operator==(const Plane &other) const
+{
+    return origin == other.origin && xAxis == other.xAxis && yAxis == other.yAxis;
+}
+
+bool libMesh::Plane::operator!=(const Plane &other) const
+{
+    return !(*this == other);
+}

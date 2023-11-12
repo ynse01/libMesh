@@ -23,6 +23,9 @@ namespace libMesh {
             float distanceTo(Point2 other);
             float squaredDistanceTo(Point2 other);
 
+            bool operator ==(const Point2& other) const;
+            bool operator !=(const Point2& other) const;
+
             friend std::ostream& operator <<(std::ostream& os, const Point2& pt) {
                 return os << "Point2(" << pt.x << ", " << pt.y << ")";
             }

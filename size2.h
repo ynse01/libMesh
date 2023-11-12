@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "math.h"
 
 namespace libMesh {
     struct Size2 {
@@ -13,6 +14,9 @@ namespace libMesh {
             Size2 scale(float scale) {
                 return Size2(width * scale, height * scale);
             }
+
+            bool operator ==(const Size2& other) const { return Math::Equals(width, other.width) && Math::Equals(height, other.height); }
+            bool operator !=(const Size2& other) const { return !(*this == other); }
 
             friend std::ostream& operator <<(std::ostream& os, const Size2& size) {
                 return os << "Size2(" << size.width << ", " << size.height << ")";

@@ -1,5 +1,6 @@
 #include "point3.h"
 #include "transformation.h"
+#include "math.h"
 
 #include <cmath>
 
@@ -74,4 +75,14 @@ libMesh::Point3 libMesh::Point3::transformed(Transformation t)
     float newY = (x * t.m01 + y * t.m11 + z * t.m21 + t.m13) / t.m33;
     float newZ = (x * t.m02 + y * t.m12 + z * t.m22 + t.m23) / t.m33;
     return Point3(newX, newY, newZ);
+}
+
+bool libMesh::Point3::operator==(const Point3 &other) const
+{
+    return Math::Equals(x, other.x) && Math::Equals(y, other.y) && Math::Equals(z, other.z);
+}
+
+bool libMesh::Point3::operator!=(const Point3 &other) const
+{
+    return !(*this == other);
 }

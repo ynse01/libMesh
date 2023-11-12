@@ -26,6 +26,9 @@ namespace libMesh {
             void scale(float value);
             Vector3 scaled(float value);
 
+            bool operator ==(const Vector3& other) const;
+            bool operator !=(const Vector3& other) const;
+
             friend std::ostream& operator <<(std::ostream& os, const Vector3& v) {
                 return os << "Vector3(" << v.x << ", " << v.y << ", " << v.z << ")";
             }

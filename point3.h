@@ -27,6 +27,9 @@ namespace libMesh {
             void transform(Transformation t);
             Point3 transformed(Transformation t);
 
+            bool operator ==(const Point3& other) const;
+            bool operator !=(const Point3& other) const;
+
             friend std::ostream& operator <<(std::ostream& os, const Point3& pt) {
                 return os << "Point3(" << pt.x << ", " << pt.y << ", " << pt.z << ")";
             }
