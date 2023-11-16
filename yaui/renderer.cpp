@@ -66,8 +66,8 @@ void YetAnotherUI::Renderer::close()
 	mRenderables.clear();
     glDeleteProgram(shaderProgram);
 
-	// Close the window
-    glfwSetWindowShouldClose((GLFWwindow *)window, GLFW_TRUE);
+    // Close OpenGL window and terminate GLFW
+	glfwTerminate();
 }
 
 void YetAnotherUI::Renderer::run()
@@ -90,11 +90,6 @@ void YetAnotherUI::Renderer::run()
 	} // Check if the ESC key was pressed or the window was closed
 	while( glfwGetKey(win, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
 		   glfwWindowShouldClose(win) == 0 );
-
-    glDeleteProgram(shaderProgram);
-    
-    // Close OpenGL window and terminate GLFW
-	glfwTerminate();
 }
 
 void YetAnotherUI::Renderer::add(Renderable *renderable)
