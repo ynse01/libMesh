@@ -5,17 +5,14 @@
 TEST(SegmentStructure, AccessTest) {
   // Arrange
   auto seg = SegmentStructure(4);
-  auto firstId = seg.nextIndex();
-  auto secondId = seg.nextIndex();
-  seg[firstId].next = 1u;
-  seg[secondId].prev = 1u;
+  seg[0u].next = 1u;
+  seg[1u].prev = 1u;
   // Act
-  auto actualId = seg.nextIndex();
-  seg[secondId].prev = actualId;
+  seg[1u].prev = 2u;
   // Assert
-  EXPECT_EQ(seg[0].prev, firstId);
-  EXPECT_EQ(seg[0].next, secondId);
-  EXPECT_EQ(seg[1].prev, actualId);
+  EXPECT_EQ(seg[0].prev, 0u);
+  EXPECT_EQ(seg[0].next, 1u);
+  EXPECT_EQ(seg[1].prev, 2u);
 }
 
 TEST(SegmentStructure, InitializationTest) {

@@ -19,7 +19,6 @@ class SegmentStructure {
         SegmentStructure(unsigned int numSegment) {
             seg = new std::vector<Segment>(numSegment);
             std::memset(seg->data(), 0, numSegment * sizeof(Segment));
-            segmentIndex = 0;
             permute = nullptr;
             chooseIndex = 0;
         }
@@ -30,14 +29,12 @@ class SegmentStructure {
             }
         }
 
-        unsigned int nextIndex() { return segmentIndex++; }
         Segment &operator[](unsigned int index) { return seg->at(index); }
 
         void generateRandomOrdering();
         unsigned int chooseSegment() { return permute->at(chooseIndex++); }
     private:
         std::vector<Segment> *seg;
-        unsigned int segmentIndex;
         std::vector<unsigned int> *permute;
         unsigned int chooseIndex;
 };
