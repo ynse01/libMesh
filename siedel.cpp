@@ -220,23 +220,27 @@ namespace siedel {
             nPoints = contours[contourCount];
             first = i;
             last = first + nPoints - 1;
-            for(j = 0u; j < nPoints; j++, i++) {
+            // First segment
+            seg[i].begin = polygon.getPoint(i);
+            seg[i].next = i + 1;
+            seg[i].prev = last;
+            seg[last].end = seg[i].begin;
+            seg[i].isInserted = false;
+            i++;
+            for(j = 1u; j < nPoints - 1; j++, i++) {
                 seg[i].begin = polygon.getPoint(i);
-                if (i == last) {
-                    seg[i].next = first;
-                    seg[i].prev = i - 1;
-                    seg[i - 1].end = seg[i].begin;
-                } else if (i == first) {
-                    seg[i].next = i + 1;
-                    seg[i].prev = last;
-                    seg[last].end = seg[i].begin;
-                } else {
-                    seg[i].next = i - 1;
-                    seg[i].prev = i + 1;
-                    seg[i - 1].end = seg[i].begin;
-                }
+                seg[i].next = i - 1;
+                seg[i].prev = i + 1;
+                seg[i - 1].end = seg[i].begin;
                 seg[i].isInserted = false;
             }
+            // Last segment
+            seg[i].begin = polygon.getPoint(i);
+            seg[i].next = first;
+            seg[i].prev = i - 1;
+            seg[i - 1].end = seg[i].begin;
+            seg[i].isInserted = false;
+            i++;
             contourCount++;
         }
         return i - 1;
