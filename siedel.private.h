@@ -1,6 +1,7 @@
 #include "siedel.h"
 #include "math.h"
 
+#include <vector>
 #include <cstring>
 
 struct Segment {
@@ -18,9 +19,7 @@ class SegmentStructure {
         SegmentStructure(unsigned int numSegment) {
             seg = new std::vector<Segment>();
             seg->reserve(numSegment);
-            std::memset(seg->data(), 0, numSegment * sizeof(Segment));
             permute = nullptr;
-            segmentIndex = 0;
             chooseIndex = 0;
         }
         ~SegmentStructure () {
@@ -30,14 +29,17 @@ class SegmentStructure {
             }
         }
 
-        unsigned int nextIndex() { return segmentIndex++; }
+        unsigned int nextIndex() {
+            Segment s{};
+            seg->push_back(s);
+            return seg->size() - 1;
+        }
         Segment &operator[](unsigned int index) { return seg->at(index); }
 
         void generateRandomOrdering();
         unsigned int chooseSegment() { return permute->at(chooseIndex++); }
     private:
         std::vector<Segment> *seg;
-        unsigned int segmentIndex;
         std::vector<unsigned int> *permute;
         unsigned int chooseIndex;
 };
@@ -67,16 +69,17 @@ class TrapezoidStructure {
         TrapezoidStructure(unsigned int numTrap) {
             trap = new std::vector<Trapezoid>();
             trap->reserve(numTrap);
-            std::memset(trap->data(), 0, numTrap * sizeof(Trapezoid));
-            trIndex = 0;
         }
         ~TrapezoidStructure () { delete trap; }
 
-        unsigned int nextIndex() { return trIndex++; }
+        unsigned int nextIndex() { 
+            Trapezoid t{};
+            trap->push_back(t);
+            return trap->size() - 1;
+        }
         Trapezoid &operator[](unsigned int index) { return trap->at(index); }
     private:
         std::vector<Trapezoid> *trap;
-        unsigned int trIndex;
 };
 
 enum NodeType {
@@ -98,17 +101,19 @@ struct QueryNode {
 class QueryStructure {
     public:
         QueryStructure(unsigned int numNodes) {
-            qs = new std::vector<QueryNode>(numNodes);
-            std::memset(qs->data(), 0, numNodes * sizeof(QueryNode));
-            qIndex = 0;
+            qs = new std::vector<QueryNode>();
+            qs->reserve(numNodes);
         }
         ~QueryStructure () { delete qs; }
 
-        unsigned int nextIndex() { return qIndex++; }
+        unsigned int nextIndex() {
+            QueryNode node{};
+            qs->push_back(node);
+            return qs->size() - 1;
+        }
         QueryNode &operator[](unsigned int index) { return qs->at(index); }
     private:
         std::vector<QueryNode> *qs;
-        unsigned int qIndex;
 };
 
 namespace {

@@ -987,24 +987,20 @@ namespace {
         // See: http://gamma.cs.unc.edu/SEIDEL/
 
         unsigned int nPoints = polygon.count();
-        SegmentStructure *seg = new SegmentStructure(nPoints);
+        SegmentStructure seg = SegmentStructure(nPoints);
 
-        QueryStructure *qs = new QueryStructure(8 * nPoints);
-        TrapezoidStructure *trap = new TrapezoidStructure(4 * nPoints);
+        QueryStructure qs = QueryStructure(8 * nPoints);
+        TrapezoidStructure trap = TrapezoidStructure(4 * nPoints);
 
         unsigned int contours = nPoints;
-        unsigned int n = initializeSegments(*seg, polygon, &contours, 1u);
-        initQueryStructure(*seg, n, *qs, *trap);
+        unsigned int n = initializeSegments(seg, polygon, &contours, 1u);
+        initQueryStructure(seg, n, qs, trap);
 
         // Step 1: Trapezoidation
-        constructTrapezoids(*seg, n, *qs, *trap);
+        constructTrapezoids(seg, n, qs, trap);
         // Step 2: Generation of monotome mountains
-        unsigned int nMonpoly = monotonateTrapezoids(*trap, *seg, n);
+        unsigned int nMonpoly = monotonateTrapezoids(trap, seg, n);
         // Step 3: Ear clipping
 
-        // Cleanup
-        delete seg;
-        delete trap;
-        delete qs;
     }
 }
