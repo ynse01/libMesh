@@ -33,7 +33,7 @@ void SegmentStructure::generateRandomOrdering() {
     }
 }
 
-namespace {
+namespace siedel {
 
     unsigned int mathLogStarN(unsigned int n) {
         unsigned int i;
@@ -982,13 +982,16 @@ namespace {
         return 0u;
     }
 
-    void siedelTriangulation(libMesh::PolyLine &polygon) {
+    libMesh::Mesh *earClipping(libMesh::PolyLine &polygon) {
+        return nullptr;
+    }
+
+    libMesh::Mesh *siedelTriangulation(libMesh::PolyLine &polygon) {
         // Using Siedel 1991 algorithm
         // See: http://gamma.cs.unc.edu/SEIDEL/
 
         unsigned int nPoints = polygon.count();
         SegmentStructure seg = SegmentStructure(nPoints);
-
         QueryStructure qs = QueryStructure(8 * nPoints);
         TrapezoidStructure trap = TrapezoidStructure(4 * nPoints);
 
@@ -1001,6 +1004,6 @@ namespace {
         // Step 2: Generation of monotome mountains
         unsigned int nMonpoly = monotonateTrapezoids(trap, seg, n);
         // Step 3: Ear clipping
-
+        return earClipping(polygon);
     }
 }

@@ -2,8 +2,6 @@
 
 #include "../siedel.private.h"
 
-using namespace libMesh;
-
 TEST(SegmentStructure, AccessTest) {
   // Arrange
   auto seg = SegmentStructure(4);
@@ -19,6 +17,29 @@ TEST(SegmentStructure, AccessTest) {
   EXPECT_EQ(seg[0].next, secondId);
   EXPECT_EQ(seg[1].prev, actualId);
 }
+
+TEST(SegmentStructure, InitializationTest) {
+  // Arrange
+  auto seg = SegmentStructure(5);
+  auto polygon = libMesh::PolyLine();
+  polygon.add(libMesh::Point2(0, 0));
+  polygon.add(libMesh::Point2(0, 1));
+  polygon.add(libMesh::Point2(1, 1));
+  polygon.add(libMesh::Point2(1, 0));
+  unsigned int contours = 4;
+  // Act
+  auto actual = siedel::initializeSegments(seg, polygon, &contours, 1);
+  // Assert
+  EXPECT_EQ(actual, 4u);
+  EXPECT_EQ(seg[1].next, 2u);
+  EXPECT_EQ(seg[2].next, 1u);
+  EXPECT_EQ(seg[3].next, 2u);
+  EXPECT_EQ(seg[4].next, 1u);
+  EXPECT_EQ(seg[1].prev, 4u);
+  EXPECT_EQ(seg[2].prev, 3u);
+  EXPECT_EQ(seg[3].prev, 4u);
+  EXPECT_EQ(seg[4].prev, 3u);
+  }
 
 TEST(QueryStructure, AccessTest) {
   // Arrange

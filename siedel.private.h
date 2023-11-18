@@ -17,8 +17,9 @@ struct Segment {
 class SegmentStructure {
     public:
         SegmentStructure(unsigned int numSegment) {
-            seg = new std::vector<Segment>();
-            seg->reserve(numSegment);
+            seg = new std::vector<Segment>(numSegment);
+            std::memset(seg->data(), 0, numSegment * sizeof(Segment));
+            segmentIndex = 0;
             permute = nullptr;
             chooseIndex = 0;
         }
@@ -29,17 +30,14 @@ class SegmentStructure {
             }
         }
 
-        unsigned int nextIndex() {
-            Segment s{};
-            seg->push_back(s);
-            return seg->size() - 1;
-        }
+        unsigned int nextIndex() { return segmentIndex++; }
         Segment &operator[](unsigned int index) { return seg->at(index); }
 
         void generateRandomOrdering();
         unsigned int chooseSegment() { return permute->at(chooseIndex++); }
     private:
         std::vector<Segment> *seg;
+        unsigned int segmentIndex;
         std::vector<unsigned int> *permute;
         unsigned int chooseIndex;
 };
@@ -116,7 +114,7 @@ class QueryStructure {
         std::vector<QueryNode> *qs;
 };
 
-namespace {
+namespace siedel {
 
     unsigned int mathLogStarN(unsigned int a);
     unsigned int mathN(unsigned int a, unsigned int b);
@@ -171,6 +169,4 @@ namespace {
     void constructTrapezoids(SegmentStructure &seg, unsigned int segmentIndex, QueryStructure &qs, TrapezoidStructure &trap);
 
     unsigned int monotonateTrapezoids(TrapezoidStructure &tr, SegmentStructure &seg, unsigned int numSegments);
-
-    void siedelTriangulation(libMesh::PolyLine &polygon);
 }

@@ -1,5 +1,8 @@
 #include "polyline.h"
+#include "mesh.h"
 
 namespace {
-    void siedelTriangulation(libMesh::PolyLine &polygon);
+    libMesh::Mesh *siedelTriangulation(libMesh::PolyLine &polygon);
+
+    libMesh::Mesh *earClipping(libMesh::PolyLine &polygon);
 }
