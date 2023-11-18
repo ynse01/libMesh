@@ -32,12 +32,12 @@ TEST(SegmentStructure, InitializationTest) {
   // Assert
   EXPECT_EQ(actual, 4u);
   EXPECT_EQ(seg[1].next, 2u);
-  EXPECT_EQ(seg[2].next, 1u);
-  EXPECT_EQ(seg[3].next, 2u);
+  EXPECT_EQ(seg[2].next, 3u);
+  EXPECT_EQ(seg[3].next, 4u);
   EXPECT_EQ(seg[4].next, 1u);
   EXPECT_EQ(seg[1].prev, 4u);
-  EXPECT_EQ(seg[2].prev, 3u);
-  EXPECT_EQ(seg[3].prev, 4u);
+  EXPECT_EQ(seg[2].prev, 1u);
+  EXPECT_EQ(seg[3].prev, 2u);
   EXPECT_EQ(seg[4].prev, 3u);
   }
 
