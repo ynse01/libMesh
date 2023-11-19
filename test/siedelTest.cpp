@@ -28,14 +28,52 @@ TEST(SegmentStructure, InitializationTest) {
   auto actual = siedel::initializeSegments(seg, polygon, &contours, 1);
   // Assert
   EXPECT_EQ(actual, 4u);
+
+  EXPECT_EQ(seg[0].next, 0u);
+  EXPECT_EQ(seg[0].prev, 0u);
+  EXPECT_EQ(seg[0].root0, 0u);
+  EXPECT_EQ(seg[0].root1, 0u);
+  EXPECT_FALSE(seg[0].isInserted);
+
+  EXPECT_EQ(seg[0].begin.x, 0);
+  EXPECT_EQ(seg[0].begin.y, 0);
+  EXPECT_EQ(seg[0].end.x, 0);
+  EXPECT_EQ(seg[0].end.y, 0);
+
   EXPECT_EQ(seg[1].next, 2u);
   EXPECT_EQ(seg[2].next, 3u);
   EXPECT_EQ(seg[3].next, 4u);
   EXPECT_EQ(seg[4].next, 1u);
+  
   EXPECT_EQ(seg[1].prev, 4u);
   EXPECT_EQ(seg[2].prev, 1u);
   EXPECT_EQ(seg[3].prev, 2u);
   EXPECT_EQ(seg[4].prev, 3u);
+  
+  EXPECT_EQ(seg[1].begin.x, 0);
+  EXPECT_EQ(seg[1].begin.y, 0);
+  EXPECT_EQ(seg[1].end.x, 0);
+  EXPECT_EQ(seg[1].end.y, 1);
+
+  EXPECT_EQ(seg[2].begin.x, 0);
+  EXPECT_EQ(seg[2].begin.y, 1);
+  EXPECT_EQ(seg[2].end.x, 1);
+  EXPECT_EQ(seg[2].end.y, 1);
+
+  EXPECT_EQ(seg[3].begin.x, 1);
+  EXPECT_EQ(seg[3].begin.y, 1);
+  EXPECT_EQ(seg[3].end.x, 1);
+  EXPECT_EQ(seg[3].end.y, 0);
+
+  EXPECT_EQ(seg[4].begin.x, 1);
+  EXPECT_EQ(seg[4].begin.y, 0);
+  EXPECT_EQ(seg[4].end.x, 0);
+  EXPECT_EQ(seg[4].end.y, 0);
+
+  EXPECT_FALSE(seg[1].isInserted);
+  EXPECT_FALSE(seg[2].isInserted);
+  EXPECT_FALSE(seg[3].isInserted);
+  EXPECT_FALSE(seg[4].isInserted);
   }
 
 TEST(QueryStructure, AccessTest) {

@@ -221,21 +221,21 @@ namespace siedel {
             first = i;
             last = first + nPoints - 1;
             // First segment
-            seg[i].begin = polygon.getPoint(i);
+            seg[i].begin = polygon.getPoint(i - 1);
             seg[i].next = i + 1;
             seg[i].prev = last;
             seg[last].end = seg[i].begin;
             seg[i].isInserted = false;
             i++;
             for(j = 1u; j < nPoints - 1; j++, i++) {
-                seg[i].begin = polygon.getPoint(i);
+                seg[i].begin = polygon.getPoint(i - 1);
                 seg[i].next = i + 1;
                 seg[i].prev = i - 1;
                 seg[i - 1].end = seg[i].begin;
                 seg[i].isInserted = false;
             }
             // Last segment
-            seg[i].begin = polygon.getPoint(i);
+            seg[i].begin = polygon.getPoint(i - 1);
             seg[i].next = first;
             seg[i].prev = i - 1;
             seg[i - 1].end = seg[i].begin;
