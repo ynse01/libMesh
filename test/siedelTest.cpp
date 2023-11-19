@@ -184,3 +184,72 @@ TEST(QueryStructure, InitializationTest) {
   EXPECT_EQ(qs[6].segmentIndex, 0u);
   EXPECT_EQ(qs[6].trapezoidIndex, 1u);
 }
+
+TEST(TrapezoidStructure, InitializationTest) {
+  // Arrange
+  auto seg = SegmentStructure(5);
+  auto polygon = libMesh::PolyLine();
+  polygon.add(libMesh::Point2(1, 1));
+  polygon.add(libMesh::Point2(1, 2));
+  polygon.add(libMesh::Point2(2, 2));
+  polygon.add(libMesh::Point2(2, 1));
+  unsigned int contours = 4;
+  auto numSegments = siedel::initializeSegments(seg, polygon, &contours, 1);
+  auto qs = QueryStructure(8 * 5);
+  auto trap = TrapezoidStructure(4 * 5);
+  unsigned int segmentIndex = 1u;
+  // Act
+  auto root = siedel::initQueryStructure(seg, segmentIndex, qs, trap);
+  // Assert
+  EXPECT_EQ(root, 0u);
+  EXPECT_EQ(qs.size(), 7u);
+  EXPECT_TRUE(seg[segmentIndex].isInserted);
+
+  EXPECT_EQ(trap[0].high, libMesh::Point2(1, 2));
+  EXPECT_EQ(trap[0].low, libMesh::Point2(1, 1));
+  EXPECT_EQ(trap[0].up0, 3u);
+  EXPECT_EQ(trap[0].up1, 0u);
+  EXPECT_EQ(trap[0].up2, 0u);
+  EXPECT_EQ(trap[0].down0, 2u);
+  EXPECT_EQ(trap[0].down1, 0u);
+  EXPECT_EQ(trap[0].leftSegment, 0u);
+  EXPECT_EQ(trap[0].rightSegment, 1u);
+  EXPECT_EQ(trap[0].sink, 5u);
+  EXPECT_TRUE(trap[0].state);
+
+  EXPECT_EQ(trap[1].high, libMesh::Point2(1, 2));
+  EXPECT_EQ(trap[1].low, libMesh::Point2(1, 1));
+  EXPECT_EQ(trap[1].up0, 3u);
+  EXPECT_EQ(trap[1].up1, 0u);
+  EXPECT_EQ(trap[1].up2, 0u);
+  EXPECT_EQ(trap[1].down0, 2u);
+  EXPECT_EQ(trap[1].down1, 0u);
+  EXPECT_EQ(trap[1].leftSegment, 1u);
+  EXPECT_EQ(trap[1].rightSegment, 0u);
+  EXPECT_EQ(trap[1].sink, 6u);
+  EXPECT_TRUE(trap[1].state);
+
+  EXPECT_EQ(trap[2].high, libMesh::Point2(1, 1));
+  //EXPECT_EQ(trap[2].low, libMesh::Point2(-inf, -inf));
+  EXPECT_EQ(trap[2].up0, 0u);
+  EXPECT_EQ(trap[2].up1, 1u);
+  EXPECT_EQ(trap[2].up2, 0u);
+  EXPECT_EQ(trap[2].down0, 0u);
+  EXPECT_EQ(trap[2].down1, 0u);
+  EXPECT_EQ(trap[2].leftSegment, 0u);
+  EXPECT_EQ(trap[2].rightSegment, 0u);
+  EXPECT_EQ(trap[2].sink, 3u);
+  EXPECT_TRUE(trap[2].state);
+
+  //EXPECT_EQ(trap[3].high, libMesh::Point2(inf, inf));
+  EXPECT_EQ(trap[3].low, libMesh::Point2(1, 2));
+  EXPECT_EQ(trap[3].up0, 0u);
+  EXPECT_EQ(trap[3].up1, 0u);
+  EXPECT_EQ(trap[3].up2, 0u);
+  EXPECT_EQ(trap[3].down0, 0u);
+  EXPECT_EQ(trap[3].down1, 1u);
+  EXPECT_EQ(trap[3].leftSegment, 0u);
+  EXPECT_EQ(trap[3].rightSegment, 0u);
+  EXPECT_EQ(trap[3].sink, 1u);
+  EXPECT_TRUE(trap[3].state);
+}
