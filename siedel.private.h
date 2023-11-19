@@ -72,6 +72,7 @@ class TrapezoidStructure {
             trap->push_back(t);
             return trap->size() - 1;
         }
+        unsigned int size() { return trap->size(); }
         Trapezoid &operator[](unsigned int index) { return trap->at(index); }
     private:
         std::vector<Trapezoid> *trap;
@@ -106,6 +107,7 @@ class QueryStructure {
             qs->push_back(node);
             return qs->size() - 1;
         }
+        unsigned int size() { return qs->size(); }
         QueryNode &operator[](unsigned int index) { return qs->at(index); }
     private:
         std::vector<QueryNode> *qs;

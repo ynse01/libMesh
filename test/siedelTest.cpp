@@ -19,10 +19,10 @@ TEST(SegmentStructure, InitializationTest) {
   // Arrange
   auto seg = SegmentStructure(5);
   auto polygon = libMesh::PolyLine();
-  polygon.add(libMesh::Point2(0, 0));
-  polygon.add(libMesh::Point2(0, 1));
   polygon.add(libMesh::Point2(1, 1));
-  polygon.add(libMesh::Point2(1, 0));
+  polygon.add(libMesh::Point2(1, 2));
+  polygon.add(libMesh::Point2(2, 2));
+  polygon.add(libMesh::Point2(2, 1));
   unsigned int contours = 4;
   // Act
   auto actual = siedel::initializeSegments(seg, polygon, &contours, 1);
@@ -50,25 +50,25 @@ TEST(SegmentStructure, InitializationTest) {
   EXPECT_EQ(seg[3].prev, 2u);
   EXPECT_EQ(seg[4].prev, 3u);
   
-  EXPECT_EQ(seg[1].begin.x, 0);
-  EXPECT_EQ(seg[1].begin.y, 0);
-  EXPECT_EQ(seg[1].end.x, 0);
-  EXPECT_EQ(seg[1].end.y, 1);
+  EXPECT_EQ(seg[1].begin.x, 1);
+  EXPECT_EQ(seg[1].begin.y, 1);
+  EXPECT_EQ(seg[1].end.x, 1);
+  EXPECT_EQ(seg[1].end.y, 2);
 
-  EXPECT_EQ(seg[2].begin.x, 0);
-  EXPECT_EQ(seg[2].begin.y, 1);
-  EXPECT_EQ(seg[2].end.x, 1);
-  EXPECT_EQ(seg[2].end.y, 1);
+  EXPECT_EQ(seg[2].begin.x, 1);
+  EXPECT_EQ(seg[2].begin.y, 2);
+  EXPECT_EQ(seg[2].end.x, 2);
+  EXPECT_EQ(seg[2].end.y, 2);
 
-  EXPECT_EQ(seg[3].begin.x, 1);
-  EXPECT_EQ(seg[3].begin.y, 1);
-  EXPECT_EQ(seg[3].end.x, 1);
-  EXPECT_EQ(seg[3].end.y, 0);
+  EXPECT_EQ(seg[3].begin.x, 2);
+  EXPECT_EQ(seg[3].begin.y, 2);
+  EXPECT_EQ(seg[3].end.x, 2);
+  EXPECT_EQ(seg[3].end.y, 1);
 
-  EXPECT_EQ(seg[4].begin.x, 1);
-  EXPECT_EQ(seg[4].begin.y, 0);
-  EXPECT_EQ(seg[4].end.x, 0);
-  EXPECT_EQ(seg[4].end.y, 0);
+  EXPECT_EQ(seg[4].begin.x, 2);
+  EXPECT_EQ(seg[4].begin.y, 1);
+  EXPECT_EQ(seg[4].end.x, 1);
+  EXPECT_EQ(seg[4].end.y, 1);
 
   EXPECT_FALSE(seg[1].isInserted);
   EXPECT_FALSE(seg[2].isInserted);
@@ -106,4 +106,81 @@ TEST(TrapezoidStructure, AccessTest) {
   EXPECT_EQ(tr[firstId].down0, firstId);
   EXPECT_EQ(tr[firstId].up0, secondId);
   EXPECT_EQ(tr[secondId].down0, thirdId);
+}
+
+TEST(QueryStructure, InitializationTest) {
+  // Arrange
+  auto seg = SegmentStructure(5);
+  auto polygon = libMesh::PolyLine();
+  polygon.add(libMesh::Point2(1, 1));
+  polygon.add(libMesh::Point2(1, 2));
+  polygon.add(libMesh::Point2(2, 2));
+  polygon.add(libMesh::Point2(2, 1));
+  unsigned int contours = 4;
+  auto numSegments = siedel::initializeSegments(seg, polygon, &contours, 1);
+  auto qs = QueryStructure(8 * 5);
+  auto trap = TrapezoidStructure(4 * 5);
+  unsigned int segmentIndex = 1u;
+  // Act
+  auto root = siedel::initQueryStructure(seg, segmentIndex, qs, trap);
+  // Assert
+  EXPECT_EQ(root, 0u);
+  EXPECT_EQ(qs.size(), 7u);
+  EXPECT_TRUE(seg[segmentIndex].isInserted);
+
+  EXPECT_EQ(qs[0].type, NodeType::Y);
+  EXPECT_EQ(qs[0].left, 2u);
+  EXPECT_EQ(qs[0].right, 1u);
+  EXPECT_EQ(qs[0].yValue, libMesh::Point2(1, 2));
+  EXPECT_EQ(qs[0].parent, 0u);
+  EXPECT_EQ(qs[0].segmentIndex, 0u);
+  EXPECT_EQ(qs[0].trapezoidIndex, 0u);
+
+  EXPECT_EQ(qs[1].type, NodeType::Sink);
+  EXPECT_EQ(qs[1].left, 0u);
+  EXPECT_EQ(qs[1].right, 0u);
+  EXPECT_EQ(qs[1].yValue, libMesh::Point2(0, 0));
+  EXPECT_EQ(qs[1].parent, 0u);
+  EXPECT_EQ(qs[1].segmentIndex, 0u);
+  EXPECT_EQ(qs[1].trapezoidIndex, 3u);
+
+  EXPECT_EQ(qs[2].type, NodeType::Y);
+  EXPECT_EQ(qs[2].left, 3u);
+  EXPECT_EQ(qs[2].right, 4u);
+  EXPECT_EQ(qs[2].yValue, libMesh::Point2(1, 1));
+  EXPECT_EQ(qs[2].parent, 0u);
+  EXPECT_EQ(qs[2].segmentIndex, 0u);
+  EXPECT_EQ(qs[2].trapezoidIndex, 0u);
+
+  EXPECT_EQ(qs[3].type, NodeType::Sink);
+  EXPECT_EQ(qs[3].left, 0u);
+  EXPECT_EQ(qs[3].right, 0u);
+  EXPECT_EQ(qs[3].yValue, libMesh::Point2(0, 0));
+  EXPECT_EQ(qs[3].parent, 2u);
+  EXPECT_EQ(qs[3].segmentIndex, 0u);
+  EXPECT_EQ(qs[3].trapezoidIndex, 2u);
+
+  EXPECT_EQ(qs[4].type, NodeType::X);
+  EXPECT_EQ(qs[4].left, 5u);
+  EXPECT_EQ(qs[4].right, 6u);
+  EXPECT_EQ(qs[4].yValue, libMesh::Point2(0, 0));
+  EXPECT_EQ(qs[4].parent, 2u);
+  EXPECT_EQ(qs[4].segmentIndex, 1u);
+  EXPECT_EQ(qs[4].trapezoidIndex, 0u);
+
+  EXPECT_EQ(qs[5].type, NodeType::Sink);
+  EXPECT_EQ(qs[5].left, 0u);
+  EXPECT_EQ(qs[5].right, 0u);
+  EXPECT_EQ(qs[5].yValue, libMesh::Point2(0, 0));
+  EXPECT_EQ(qs[5].parent, 4u);
+  EXPECT_EQ(qs[5].segmentIndex, 0u);
+  EXPECT_EQ(qs[5].trapezoidIndex, 0u);
+
+  EXPECT_EQ(qs[6].type, NodeType::Sink);
+  EXPECT_EQ(qs[6].left, 0u);
+  EXPECT_EQ(qs[6].right, 0u);
+  EXPECT_EQ(qs[6].yValue, libMesh::Point2(0, 0));
+  EXPECT_EQ(qs[6].parent, 4u);
+  EXPECT_EQ(qs[6].segmentIndex, 0u);
+  EXPECT_EQ(qs[6].trapezoidIndex, 1u);
 }
